@@ -1,8 +1,7 @@
 module Main (main) where
 
-import qualified MyLib (someFunc)
+import SimpleJSON
+import PutJSON (putJValue)
 
 main :: IO ()
-main = do
-  putStrLn "Hello, Haskell!"
-  MyLib.someFunc
+main = putJValue (JObject [("foo", JNumber 1), ("bar", JBool False)])
