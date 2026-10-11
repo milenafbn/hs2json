@@ -17,7 +17,7 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  MyLib, SimpleJSON
+    exposed-modules:  SimpleJSON, PutJSON, Prettify, PrettyJSON
     -- other-modules:
     -- other-extensions:
     build-depends:    base ^>=4.20.2.0
