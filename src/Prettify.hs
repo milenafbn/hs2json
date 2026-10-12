@@ -13,6 +13,7 @@ module Prettify
     , punctuate
     , group
     , softline
+    , compact
     ) where
 
 -- Evita conflito com o operador (<>) que ja existe no Prelude.
@@ -78,6 +79,19 @@ flatten (x `Concat` y) = flatten x `Concat` flatten y
 flatten Line           = Char ' '
 flatten (x `Union` _)  = flatten x
 flatten other          = other
+
+-- Renderiza sem se preocupar com largura: so emite os caracteres.
+compact :: Doc -> String
+compact x = transform [x]
+    where transform [] = ""
+          transform (d:ds) =
+              case d of
+                Empty        -> transform ds
+                Char c       -> c : transform ds
+                Text s       -> s ++ transform ds
+                Line         -> '\n' : transform ds
+                a `Concat` b -> transform (a:b:ds)
+                _ `Union` b  -> transform (b:ds)
 
 -- Acrescenta o separador a cada documento, exceto ao ultimo.
 punctuate :: Doc -> [Doc] -> [Doc]
