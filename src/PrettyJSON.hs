@@ -7,7 +7,7 @@ import Numeric (showHex)
 import Data.Char (ord)
 import Data.Bits (shiftR, (.&.))
 import SimpleJSON (JValue(..))
-import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, text)
+import Prettify (Doc, (<>), char, double, fsep, hcat, nest, punctuate, text)
 
 -- Converte cada tipo JSON em um documento, sem imprimir no terminal.
 renderJValue :: JValue -> Doc
@@ -67,6 +67,7 @@ hexEscape c | d < 0x10000 = smallHex d
   where d = ord c
 
 -- Estrutura comum de arrays e objetos: delimitadores e itens com virgulas.
+-- O nest 2 indenta os itens quando a linha quebra.
 series :: Char -> Char -> (a -> Doc) -> [a] -> Doc
-series open close item = enclose open close
+series open close item = enclose open close . nest 2
                          . fsep . punctuate (char ',') . map item

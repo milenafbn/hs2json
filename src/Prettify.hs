@@ -15,6 +15,8 @@ module Prettify
     , softline
     , compact
     , pretty
+    , fill
+    , nest
     ) where
 
 -- Evita conflito com o operador (<>) que ja existe no Prelude.
@@ -118,6 +120,18 @@ w `fits` _ | w < 0 = False
 w `fits` ""        = True
 w `fits` ('\n':_)  = True
 w `fits` (c:cs)    = (w - 1) `fits` cs
+
+-- completa o documento com espacos ate a largura dada
+fill :: Int -> Doc -> Doc
+fill width x = x <> text (replicate (width - col) ' ')
+    where col = length (compact (flatten x))
+
+-- indenta com i espacos as linhas que vem
+nest :: Int -> Doc -> Doc
+nest i (a `Concat` b) = nest i a `Concat` nest i b
+nest i (a `Union` b)  = nest i a `Union` nest i b
+nest i Line           = Line <> text (replicate i ' ')
+nest _ other          = other
 
 -- Acrescenta o separador a cada documento, exceto ao ultimo.
 punctuate :: Doc -> [Doc] -> [Doc]

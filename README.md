@@ -23,17 +23,28 @@ de forma organizada e testar o código com QuickCheck. O desenvolvimento segue o
 
 ## 📚 O que já foi feito
 
-Implementamos as etapas dos **capítulos 1 a 5** do tutorial. Já conseguimos representar dados
+Implementamos as etapas dos **capítulos 1 a 6** do tutorial. Já conseguimos representar dados
 JSON, consultar seus valores e mostrar esses dados no terminal de duas formas: com o
 renderizador simples (`PutJSON`) e com o *pretty printer* (`PrettyJSON` + `Prettify`),
-que quebra as linhas de acordo com a largura disponível.
+que quebra as linhas de acordo com a largura disponível e indenta arrays e objetos.
+
+No capítulo 6 resolvemos os dois exercícios propostos pelo tutorial, que não trazem
+resposta pronta:
+
+- `fill`: completa um documento com espaços até uma largura (útil para alinhar colunas).
+- `nest`: indenta as linhas que vêm depois de uma quebra. O `PrettyJSON` usa `nest 2`
+  em arrays e objetos, e os níveis aninhados somam (2, 4, 6... espaços).
+
+Também completamos o `hs2json.cabal` com `synopsis`, `description` e `category`, e
+ampliamos a faixa de versão do `base` para `>= 4.7 && < 5`, para que o projeto compile
+com diferentes versões do GHC.
 
 | Arquivo | Para que serve |
 | --- | --- |
 | `src/SimpleJSON.hs` | Define os tipos de dados JSON e as funções para consultar seus valores. |
 | `src/PutJSON.hs` | Transforma os dados JSON em texto e mostra no terminal. |
-| `src/Prettify.hs` | Biblioteca de formatação: o tipo `Doc`, as funções para montar documentos e as renderizações `compact` e `pretty`. |
-| `src/PrettyJSON.hs` | Converte dados JSON em `Doc`, com a formatação de strings (incluindo escapes Unicode), números, booleanos, null, arrays e objetos. |
+| `src/Prettify.hs` | Biblioteca de formatação: o tipo `Doc`, as funções para montar documentos (incluindo `fill` e `nest`) e as renderizações `compact` e `pretty`. |
+| `src/PrettyJSON.hs` | Converte dados JSON em `Doc`, com a formatação de strings (incluindo escapes Unicode), números, booleanos, null, arrays e objetos indentados. |
 | `app/Main.hs` | Executa um exemplo de uso do projeto. |
 
 ## ▶️ Como executar
@@ -76,7 +87,13 @@ putStrLn (pretty 30 value)
 ```
 
 Com largura 30 o objeto cabe em uma linha (`{"f": 1.0, "q": true }`). Com largura 10,
-ele é quebrado em várias linhas.
+ele é quebrado em várias linhas, com indentação:
+
+```text
+{"f": 1.0,
+  "q": true
+  }
+```
 
 > **Atenção:** importe só as funções necessárias de `Prettify`, como no exemplo. Com
 > `import Prettify` completo, o operador `<>` fica ambíguo com o `<>` do Prelude.
@@ -87,7 +104,7 @@ O exemplo em `cabal run` continua usando o renderizador simples `PutJSON`, como 
 
 Nos próximos capítulos, vamos:
 
-- Fazer os exercícios e ajustes de empacotamento do capítulo 6.
+- Eliminar os avisos do compilador (`-Wall`) sobre variáveis não usadas.
 - Adicionar testes com QuickCheck, que serão executados com `cabal test`.
 
 ## 🎥 Vídeo de apresentação
