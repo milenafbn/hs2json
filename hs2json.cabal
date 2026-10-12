@@ -1,8 +1,11 @@
 cabal-version:      3.0
 name:               hs2json
 version:            0.1.0.0
--- synopsis:
--- description:
+synopsis:           Biblioteca para representar JSON e imprimi-lo de forma agradável
+description:        Uma pequena biblioteca Haskell que representa valores JSON,
+                    faz pretty printing com quebra de linha e indentação e
+                    é testada com QuickCheck.
+category:           Text
 license:            MIT
 license-file:       LICENSE
 author:             Milena Freire Britto Neves, Ana Iara Loayza Costa
@@ -20,7 +23,7 @@ library
     exposed-modules:  SimpleJSON, PutJSON, Prettify, PrettyJSON
     -- other-modules:
     -- other-extensions:
-    build-depends:    base ^>=4.20.2.0
+    build-depends:    base >= 4.7 && < 5
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -30,7 +33,7 @@ executable hs2json
     -- other-modules:
     -- other-extensions:
     build-depends:
-        base ^>=4.20.2.0,
+        base >= 4.7 && < 5,
         hs2json
 
     hs-source-dirs:   app
