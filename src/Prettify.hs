@@ -1,36 +1,83 @@
-module Prettify where
+module Prettify
+    (
+      Doc
+    , empty
+    , char
+    , text
+    , double
+    , line
+    , (<>)
+    , hcat
+    , fsep
+    , (</>)
+    , punctuate
+    , group
+    , softline
+    ) where
 
 -- Evita conflito com o operador (<>) que ja existe no Prelude.
 import Prelude hiding ((<>))
 
--- Esboco do documento; sera implementado no capitulo 5.
--- As funcoes com undefined compilam, mas dao erro se forem executadas.
-data Doc = ToBeDefined
-           deriving (Show)
+-- Documento em forma de arvore: Concat e Union sao nos internos, o resto sao folhas.
+data Doc = Empty
+         | Char Char
+         | Text String
+         | Line
+         | Concat Doc Doc
+         | Union Doc Doc
+           deriving (Show, Eq)
 
-string :: String -> Doc
-string str = undefined
-
-text :: String -> Doc
-text str = undefined
-
-double :: Double -> Doc
-double num = undefined
-
--- Junta dois documentos.
-(<>) :: Doc -> Doc -> Doc
-a <> b = undefined
+empty :: Doc
+empty = Empty
 
 char :: Char -> Doc
-char c = undefined
+char c = Char c
+
+text :: String -> Doc
+text "" = Empty
+text s  = Text s
+
+double :: Double -> Doc
+double d = text (show d)
+
+-- Quebra de linha que sempre aparece.
+line :: Doc
+line = Line
+
+-- Junta dois documentos. Empty e o elemento neutro.
+(<>) :: Doc -> Doc -> Doc
+Empty <> y = y
+x <> Empty = x
+x <> y = x `Concat` y
 
 -- Junta uma lista de documentos em um so.
 hcat :: [Doc] -> Doc
-hcat xs = undefined
+hcat = fold (<>)
 
--- Combinara documentos com a possibilidade de quebrar linhas.
+fold :: (Doc -> Doc -> Doc) -> [Doc] -> Doc
+fold f = foldr f empty
+
+-- Junta documentos com uma quebra de linha opcional entre eles.
 fsep :: [Doc] -> Doc
-fsep xs = undefined
+fsep = fold (</>)
+
+(</>) :: Doc -> Doc -> Doc
+x </> y = x <> softline <> y
+
+-- Quebra de linha que so aparece se a linha nao couber.
+softline :: Doc
+softline = group line
+
+-- Guarda duas versoes do documento: achatada (esquerda) e original (direita).
+group :: Doc -> Doc
+group x = flatten x `Union` x
+
+-- Troca as quebras de linha por espacos.
+flatten :: Doc -> Doc
+flatten (x `Concat` y) = flatten x `Concat` flatten y
+flatten Line           = Char ' '
+flatten (x `Union` _)  = flatten x
+flatten other          = other
 
 -- Acrescenta o separador a cada documento, exceto ao ultimo.
 punctuate :: Doc -> [Doc] -> [Doc]
