@@ -23,7 +23,7 @@ de forma organizada e testar o código com QuickCheck. O desenvolvimento segue o
 
 ## 📚 O que já foi feito
 
-Concluímos os **capítulos 1 a 3** do tutorial. Já conseguimos representar dados
+Implementamos as etapas dos **capítulos 1 a 4** do tutorial. Já conseguimos representar dados
 JSON e mostrar esses dados no terminal. A parte que vai organizar a saída com
 quebras de linha e indentação (o *pretty printer*) ainda está no início.
 
@@ -32,7 +32,7 @@ quebras de linha e indentação (o *pretty printer*) ainda está no início.
 | `src/SimpleJSON.hs` | Define os tipos de dados JSON e as funções para consultar seus valores. |
 | `src/PutJSON.hs` | Transforma os dados JSON em texto e mostra no terminal. |
 | `src/Prettify.hs` | Contém o início da biblioteca de formatação. |
-| `src/PrettyJSON.hs` | Contém o início da formatação de JSON usando essa biblioteca. |
+| `src/PrettyJSON.hs` | Define a formatação de strings, números, booleanos, null, arrays e objetos, incluindo escapes Unicode. Depende da conclusão de `Prettify`. |
 | `app/Main.hs` | Executa um exemplo de uso do projeto. |
 
 ## ▶️ Como executar
@@ -66,12 +66,12 @@ renderJValue (JArray [JBool True, JNull])
 
 As funções de `Prettify` ainda usam `undefined`, uma marcação temporária prevista
 no tutorial. Por enquanto, essas funções dão erro se forem executadas.
-`PrettyJSON` também ainda não formata arrays e objetos.
+As regras de formatação de `PrettyJSON` já foram escritas, mas sua execução
+depende da implementação de `Prettify` no capítulo 5. O exemplo em `cabal run`
+continua usando o renderizador simples `PutJSON`.
 
 Nos próximos capítulos, vamos:
 
-- Tratar caracteres especiais nas strings, como aspas e quebras de linha.
-- Completar a formatação de arrays e objetos.
 - Implementar a biblioteca `Prettify`.
 - Adicionar testes com QuickCheck, que serão executados com `cabal test`.
 
