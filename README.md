@@ -23,16 +23,17 @@ de forma organizada e testar o código com QuickCheck. O desenvolvimento segue o
 
 ## 📚 O que já foi feito
 
-Implementamos as etapas dos **capítulos 1 a 4** do tutorial. Já conseguimos representar dados
-JSON e mostrar esses dados no terminal. A parte que vai organizar a saída com
-quebras de linha e indentação (o *pretty printer*) ainda está no início.
+Implementamos as etapas dos **capítulos 1 a 5** do tutorial. Já conseguimos representar dados
+JSON, consultar seus valores e mostrar esses dados no terminal de duas formas: com o
+renderizador simples (`PutJSON`) e com o *pretty printer* (`PrettyJSON` + `Prettify`),
+que quebra as linhas de acordo com a largura disponível.
 
 | Arquivo | Para que serve |
 | --- | --- |
 | `src/SimpleJSON.hs` | Define os tipos de dados JSON e as funções para consultar seus valores. |
 | `src/PutJSON.hs` | Transforma os dados JSON em texto e mostra no terminal. |
-| `src/Prettify.hs` | Contém o início da biblioteca de formatação. |
-| `src/PrettyJSON.hs` | Define a formatação de strings, números, booleanos, null, arrays e objetos, incluindo escapes Unicode. Depende da conclusão de `Prettify`. |
+| `src/Prettify.hs` | Biblioteca de formatação: o tipo `Doc`, as funções para montar documentos e as renderizações `compact` e `pretty`. |
+| `src/PrettyJSON.hs` | Converte dados JSON em `Doc`, com a formatação de strings (incluindo escapes Unicode), números, booleanos, null, arrays e objetos. |
 | `app/Main.hs` | Executa um exemplo de uso do projeto. |
 
 ## ▶️ Como executar
@@ -62,17 +63,31 @@ putJValue (JObject [("nome", JString "Sergio"), ("idade", JNumber 38)])
 renderJValue (JArray [JBool True, JNull])
 ```
 
+Para testar o *pretty printer*, em uma nova sessão do `cabal repl`:
+
+```haskell
+import SimpleJSON
+import PrettyJSON
+import Prettify (compact, pretty)
+let value = renderJValue (JObject [("f", JNumber 1), ("q", JBool True)])
+putStrLn (compact value)
+putStrLn (pretty 10 value)
+putStrLn (pretty 30 value)
+```
+
+Com largura 30 o objeto cabe em uma linha (`{"f": 1.0, "q": true }`). Com largura 10,
+ele é quebrado em várias linhas.
+
+> **Atenção:** importe só as funções necessárias de `Prettify`, como no exemplo. Com
+> `import Prettify` completo, o operador `<>` fica ambíguo com o `<>` do Prelude.
+
 ## 🚧 Próximas etapas
 
-As funções de `Prettify` ainda usam `undefined`, uma marcação temporária prevista
-no tutorial. Por enquanto, essas funções dão erro se forem executadas.
-As regras de formatação de `PrettyJSON` já foram escritas, mas sua execução
-depende da implementação de `Prettify` no capítulo 5. O exemplo em `cabal run`
-continua usando o renderizador simples `PutJSON`.
+O exemplo em `cabal run` continua usando o renderizador simples `PutJSON`, como no tutorial.
 
 Nos próximos capítulos, vamos:
 
-- Implementar a biblioteca `Prettify`.
+- Fazer os exercícios e ajustes de empacotamento do capítulo 6.
 - Adicionar testes com QuickCheck, que serão executados com `cabal test`.
 
 ## 🎥 Vídeo de apresentação
