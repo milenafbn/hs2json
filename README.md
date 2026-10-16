@@ -23,7 +23,7 @@ de forma organizada e testar o código com QuickCheck. O desenvolvimento segue o
 
 ## 📚 O que já foi feito
 
-Implementamos as etapas dos **capítulos 1 a 7** do tutorial. Já conseguimos representar dados
+Implementamos as etapas dos **capítulos 1 a 8** do tutorial. Já conseguimos representar dados
 JSON, consultar seus valores e mostrar esses dados no terminal de duas formas: com o
 renderizador simples (`PutJSON`) e com o *pretty printer* (`PrettyJSON` + `Prettify`),
 que quebra as linhas de acordo com a largura disponível e indenta arrays e objetos.
@@ -49,8 +49,8 @@ com diferentes versões do GHC.
 | `src/PutJSON.hs` | Transforma os dados JSON em texto e mostra no terminal. |
 | `src/Prettify.hs` | Biblioteca de formatação: o tipo `Doc`, as funções para montar documentos (incluindo `fill` e `nest`) e as renderizações `compact` e `pretty`. |
 | `src/PrettyJSON.hs` | Converte dados JSON em `Doc`, com a formatação de strings (incluindo escapes Unicode), números, booleanos, null, arrays e objetos indentados. |
-| `src/QuickTestes.hs` | Exemplos do capítulo 7: ordenação e propriedades testadas com QuickCheck. |
-| `test/Spec.hs` | Executa as sete propriedades de ordenação com `cabal test`. |
+| `src/QuickTestes.hs` | Exemplos de ordenação e geração de valores do tipo `Ternary` com QuickCheck. |
+| `test/Spec.hs` | Gera documentos aleatórios e executa os testes de ordenação e de documentos com `cabal test`. |
 | `app/Main.hs` | Executa um exemplo de uso do projeto. |
 
 ## ▶️ Como executar
@@ -134,8 +134,40 @@ O tutorial também apresenta `prop_minimum`, sem tratar a lista vazia. Mantivemo
 esse exemplo para estudo no REPL, mas ele não entra na suíte automática porque
 falha para `[]`. A versão corrigida é `prop_minimum'`.
 
-Esses primeiros testes são de ordenação. Os testes do pretty printer e o gerador
-`Arbitrary JValue` exigido pela atividade ainda precisam ser acrescentados.
+No capítulo 8, acrescentamos `Arbitrary Doc`, que gera documentos aleatórios,
+e sete propriedades sobre as funções básicas da biblioteca:
+
+- Concatenar com `empty` mantém o documento.
+- `char`, `text`, `line` e `double` criam os documentos esperados.
+- `hcat` combina a lista como uma concatenação recursiva.
+- `punctuate` acrescenta os separadores, considerando a simplificação de documentos vazios.
+
+Essas propriedades são encontradas automaticamente por `quickCheckAll`, usando
+Template Haskell. `prop_line` não recebe entradas: ela verifica uma igualdade fixa.
+Na versão instalada do QuickCheck (2.19), `quickCheckAll` reportou 100 testes
+para cada propriedade, inclusive essa, diferente da saída ilustrada no PDF.
+Os sete testes de ordenação continuam na suíte.
+Se qualquer grupo falhar, o programa devolve um código de erro ao Cabal.
+
+Para experimentar o gerador de documentos e as propriedades no REPL:
+
+```sh
+cabal repl test:hs2json-test
+```
+
+```haskell
+generate arbitrary :: IO [Doc]
+quickCheck prop_empty_id
+quickCheck prop_punctuate'
+```
+
+Como no tutorial, `Doc(..)` agora exporta os construtores para permitir os testes.
+O exemplo `Ternary` pode ser experimentado no REPL com
+`generate arbitrary :: IO [Ternary]` depois de importar `QuickTestes` e `Test.QuickCheck`.
+
+Esses testes conferem as operações básicas de documentos. Eles ainda não verificam
+toda a renderização de `compact` e `pretty`. O gerador `Arbitrary JValue` e os
+testes específicos de JSON exigidos pela atividade também continuam pendentes.
 
 ## 🚧 Próximas etapas
 
@@ -144,7 +176,7 @@ O exemplo em `cabal run` continua usando o renderizador simples `PutJSON`, como 
 Nos próximos capítulos, vamos:
 
 - Eliminar os avisos do compilador (`-Wall`) sobre variáveis não usadas.
-- Testar o pretty printer, seguindo o capítulo 8.
+- Explorar a cobertura e os testes de renderização do capítulo 9 (opcional).
 - Completar os requisitos da atividade com `Arbitrary JValue` e propriedades de JSON.
   Ao gerar arrays e objetos, usar ``resize (n `div` 2)`` em volta de `listOf`,
   conforme o alerta da atividade, para limitar também o tamanho das listas.
