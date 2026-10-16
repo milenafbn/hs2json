@@ -3,6 +3,13 @@ module QuickTestes where
 import Data.List (sort, (\\))
 import Test.QuickCheck
 
+-- Exemplo do capitulo 8: escolhe um dos tres valores da logica ternaria
+data Ternary = Yes | No | Unknown
+    deriving (Eq, Show)
+
+instance Arbitrary Ternary where
+    arbitrary = elements [Yes, No, Unknown]
+
 -- Ordena recursivamente os elementos menores e os maiores ou iguais ao pivo
 qsort :: Ord a => [a] -> [a]
 qsort [] = []
