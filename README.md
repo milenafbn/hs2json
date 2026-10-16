@@ -23,7 +23,7 @@ de forma organizada e testar o código com QuickCheck. O desenvolvimento segue o
 
 ## 📚 O que já foi feito
 
-Implementamos as etapas dos **capítulos 1 a 6** do tutorial. Já conseguimos representar dados
+Implementamos as etapas dos **capítulos 1 a 7** do tutorial. Já conseguimos representar dados
 JSON, consultar seus valores e mostrar esses dados no terminal de duas formas: com o
 renderizador simples (`PutJSON`) e com o *pretty printer* (`PrettyJSON` + `Prettify`),
 que quebra as linhas de acordo com a largura disponível e indenta arrays e objetos.
@@ -35,6 +35,10 @@ resposta pronta:
 - `nest`: indenta as linhas que vêm depois de uma quebra. O `PrettyJSON` usa `nest 2`
   em arrays e objetos, e os níveis aninhados somam (2, 4, 6... espaços).
 
+Na versão atual, `fill` calcula os espaços considerando o documento sem quebras
+de linha. Ele funciona para os exemplos de uma linha; não preenche cada linha
+separadamente em documentos com várias linhas.
+
 Também completamos o `hs2json.cabal` com `synopsis`, `description` e `category`, e
 ampliamos a faixa de versão do `base` para `>= 4.7 && < 5`, para que o projeto compile
 com diferentes versões do GHC.
@@ -45,6 +49,8 @@ com diferentes versões do GHC.
 | `src/PutJSON.hs` | Transforma os dados JSON em texto e mostra no terminal. |
 | `src/Prettify.hs` | Biblioteca de formatação: o tipo `Doc`, as funções para montar documentos (incluindo `fill` e `nest`) e as renderizações `compact` e `pretty`. |
 | `src/PrettyJSON.hs` | Converte dados JSON em `Doc`, com a formatação de strings (incluindo escapes Unicode), números, booleanos, null, arrays e objetos indentados. |
+| `src/QuickTestes.hs` | Exemplos do capítulo 7: ordenação e propriedades testadas com QuickCheck. |
+| `test/Spec.hs` | Executa as sete propriedades de ordenação com `cabal test`. |
 | `app/Main.hs` | Executa um exemplo de uso do projeto. |
 
 ## ▶️ Como executar
@@ -98,6 +104,39 @@ ele é quebrado em várias linhas, com indentação:
 > **Atenção:** importe só as funções necessárias de `Prettify`, como no exemplo. Com
 > `import Prettify` completo, o operador `<>` fica ambíguo com o `<>` do Prelude.
 
+## 🧪 Testes com QuickCheck
+
+No capítulo 7, usamos uma função de ordenação (`qsort`) para aprender a escrever
+propriedades. O QuickCheck gera listas e verifica se as regras valem para elas.
+
+```sh
+cabal test --test-show-details=direct
+```
+
+A suíte verifica sete propriedades: ordenar duas vezes dá o mesmo resultado;
+o primeiro elemento é o mínimo; a saída está ordenada; os elementos e suas
+repetições são preservados; o último é o máximo; o mínimo da junção de duas
+listas é o menor dos mínimos; e o resultado coincide com `sort` da biblioteca padrão.
+Cada propriedade precisa passar em 100 testes. Algumas descartam listas vazias,
+pois funções como `head` e `minimum` não aceitam essas listas.
+
+Para experimentar em `cabal repl`:
+
+```haskell
+import QuickTestes
+import Test.QuickCheck
+qsort [3, 1, 2, 1]
+quickCheck (prop_idempotent :: [Integer] -> Bool)
+quickCheck (prop_minimum' :: [Integer] -> Property)
+```
+
+O tutorial também apresenta `prop_minimum`, sem tratar a lista vazia. Mantivemos
+esse exemplo para estudo no REPL, mas ele não entra na suíte automática porque
+falha para `[]`. A versão corrigida é `prop_minimum'`.
+
+Esses primeiros testes são de ordenação. Os testes do pretty printer e o gerador
+`Arbitrary JValue` exigido pela atividade ainda precisam ser acrescentados.
+
 ## 🚧 Próximas etapas
 
 O exemplo em `cabal run` continua usando o renderizador simples `PutJSON`, como no tutorial.
@@ -105,7 +144,10 @@ O exemplo em `cabal run` continua usando o renderizador simples `PutJSON`, como 
 Nos próximos capítulos, vamos:
 
 - Eliminar os avisos do compilador (`-Wall`) sobre variáveis não usadas.
-- Adicionar testes com QuickCheck, que serão executados com `cabal test`.
+- Testar o pretty printer, seguindo o capítulo 8.
+- Completar os requisitos da atividade com `Arbitrary JValue` e propriedades de JSON.
+  Ao gerar arrays e objetos, usar ``resize (n `div` 2)`` em volta de `listOf`,
+  conforme o alerta da atividade, para limitar também o tamanho das listas.
 
 ## 🎥 Vídeo de apresentação
 
