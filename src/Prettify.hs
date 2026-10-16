@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Prettify
     (
       Doc(..)
@@ -21,6 +23,7 @@ module Prettify
 
 -- Evita conflito com o operador (<>) que ja existe no Prelude.
 import Prelude hiding ((<>))
+import GHC.Generics (Generic)
 
 -- Documento em forma de arvore: Concat e Union sao nos internos, o resto sao folhas.
 data Doc = Empty
@@ -29,7 +32,7 @@ data Doc = Empty
          | Line
          | Concat Doc Doc
          | Union Doc Doc
-           deriving (Show, Eq)
+           deriving (Show, Eq, Generic)
 
 empty :: Doc
 empty = Empty
