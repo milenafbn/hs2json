@@ -1,4 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
+-- As instancias Arbitrary ficam aqui, e nao em src/, para a biblioteca nao
+-- depender de codigo de teste. Por isso desligamos o aviso de instancia orfa.
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Main where
 

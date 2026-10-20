@@ -27,8 +27,8 @@ string :: String -> Doc
 string = enclose '"' '"' . hcat . map oneChar
 
 -- Mesma operacao de string, com o argumento explicito, para comparacao.
-pointyString :: String -> Doc
-pointyString s = enclose '"' '"' (hcat (map oneChar s))
+_pointyString :: String -> Doc
+_pointyString s = enclose '"' '"' (hcat (map oneChar s))
 
 -- Coloca um documento entre caracteres de abertura e fechamento.
 enclose :: Char -> Char -> Doc -> Doc

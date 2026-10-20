@@ -1,3 +1,7 @@
+-- head e usado de proposito nas propriedades do capitulo 7 (prop_minimum mostra
+-- que ele falha com lista vazia), entao desligamos o aviso de funcao parcial.
+{-# OPTIONS_GHC -Wno-x-partial #-}
+
 module QuickTestes where
 
 import Data.List (sort, (\\))
