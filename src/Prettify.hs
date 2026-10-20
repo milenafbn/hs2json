@@ -120,9 +120,9 @@ pretty width x = best 0 [x]
 -- Verifica se a primeira linha da string cabe em w colunas.
 fits :: Int -> String -> Bool
 w `fits` _ | w < 0 = False
-w `fits` ""        = True
-w `fits` ('\n':_)  = True
-w `fits` (c:cs)    = (w - 1) `fits` cs
+_w `fits` ""        = True
+_w `fits` ('\n':_)  = True
+w `fits` (_:cs)    = (w - 1) `fits` cs
 
 -- completa o documento com espacos ate a largura dada
 fill :: Int -> Doc -> Doc
@@ -138,6 +138,6 @@ nest _ other          = other
 
 -- Acrescenta o separador a cada documento, exceto ao ultimo.
 punctuate :: Doc -> [Doc] -> [Doc]
-punctuate p [] = []
-punctuate p [d] = [d]
+punctuate _p [] = []
+punctuate _p [d] = [d]
 punctuate p (d:ds) = (d <> p) : punctuate p ds
